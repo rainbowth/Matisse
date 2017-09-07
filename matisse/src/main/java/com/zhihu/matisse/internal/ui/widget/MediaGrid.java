@@ -73,9 +73,10 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     public void onClick(View v) {
         if (mListener != null) {
             if (v == mThumbnail) {
+                mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder);
                 // 未消费此事件，将会代理为选择事件
-                if (!mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder))
-                    mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);
+                /*if (!mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder))
+                    mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);*/
             } else if (v == mCheckView) {
                 mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);
             }
@@ -107,7 +108,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     public void setCheckEnabled(boolean enabled) {
-        mCheckView.setEnabled(enabled);
+        //mCheckView.setEnabled(enabled);
     }
 
     public void setCheckedNum(int checkedNum) {

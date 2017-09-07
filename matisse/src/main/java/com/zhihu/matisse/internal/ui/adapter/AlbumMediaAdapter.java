@@ -160,6 +160,8 @@ public class AlbumMediaAdapter extends
                 if (assertAddSelection(holder.itemView.getContext(), item)) {
                     mSelectedCollection.add(item);
                     notifyCheckStateChanged();
+                }else {
+                    checkView.setChecked(false);
                 }
             } else {
                 mSelectedCollection.remove(item);
@@ -173,6 +175,8 @@ public class AlbumMediaAdapter extends
                 if (assertAddSelection(holder.itemView.getContext(), item)) {
                     mSelectedCollection.add(item);
                     notifyCheckStateChanged();
+                }else {
+                    checkView.setChecked(false);
                 }
             }
         }
