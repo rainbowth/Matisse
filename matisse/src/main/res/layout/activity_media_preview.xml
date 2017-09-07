@@ -42,10 +42,11 @@
             android:layout_height="match_parent"/>
 
 
-        <CheckBox
+        <com.zhihu.matisse.internal.ui.widget.CheckView
             android:id="@+id/check_view"
-            android:button="@drawable/check_button"
+            android:src="@drawable/check_button"
             android:gravity="center"
+            android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

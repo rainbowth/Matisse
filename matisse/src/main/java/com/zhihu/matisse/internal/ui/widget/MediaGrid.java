@@ -27,6 +27,7 @@ import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Item;
@@ -35,7 +36,7 @@ import com.zhihu.matisse.internal.entity.SelectionSpec;
 public class MediaGrid extends SquareFrameLayout implements View.OnClickListener {
 
     private ImageView mThumbnail;
-    private CheckBox mCheckView;
+    private CheckView mCheckView;
     private ImageView mGifTag;
     private TextView mVideoDuration;
 
@@ -59,7 +60,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         LayoutInflater.from(context).inflate(R.layout.media_grid_content, this, true);
 
         mThumbnail = (ImageView) findViewById(R.id.media_thumbnail);
-        mCheckView = (CheckBox) findViewById(R.id.check_view);
+        mCheckView = (CheckView) findViewById(R.id.check_view);
         mGifTag = (ImageView) findViewById(R.id.gif);
         mVideoDuration = (TextView) findViewById(R.id.video_duration);
 
@@ -73,10 +74,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     public void onClick(View v) {
         if (mListener != null) {
             if (v == mThumbnail) {
-                mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder);
                 // 未消费此事件，将会代理为选择事件
-                /*if (!mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder))
-                    mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);*/
+                if (!mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder))
+                    mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);
             } else if (v == mCheckView) {
                 mListener.onCheckViewClicked(mCheckView, mMedia, mPreBindInfo.mViewHolder);
             }

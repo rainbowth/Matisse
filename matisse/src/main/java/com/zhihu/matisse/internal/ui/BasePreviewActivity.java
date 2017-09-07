@@ -51,7 +51,7 @@ public abstract class BasePreviewActivity extends AppCompatActivity implements V
 
     protected int mPreviousPos = -1;
     private TextView mSelectCount;
-    protected CheckBox mCheckView;
+    protected CheckView mCheckView;
     private TextView mButtonApply;
 
     @Override
@@ -81,7 +81,7 @@ public abstract class BasePreviewActivity extends AppCompatActivity implements V
         mButtonApply = (TextView) findViewById(R.id.button_apply);
         mButtonApply.setOnClickListener(this);
         mSelectCount = (TextView) findViewById(R.id.selected_count);
-        mCheckView = (CheckBox) findViewById(R.id.check_view);
+        mCheckView = (CheckView) findViewById(R.id.check_view);
         mCheckView.setOnClickListener(new View.OnClickListener() {
 
             @Override
