@@ -16,7 +16,9 @@
 package com.zhihu.matisse.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -34,6 +36,7 @@ import android.widget.TextView;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Album;
+import com.zhihu.matisse.internal.entity.IncapableCause;
 import com.zhihu.matisse.internal.entity.Item;
 import com.zhihu.matisse.internal.entity.SelectionSpec;
 import com.zhihu.matisse.internal.model.AlbumCollection;
@@ -344,9 +347,32 @@ public class MatisseActivity extends AppCompatActivity implements
 
     @Override
     public void capture() {
-        if (mMediaStoreCompat != null) {
-            mMediaStoreCompat.dispatchCaptureIntent(this, REQUEST_CODE_CAPTURE);
+        if (assertAddSelection(this)) {
+            if (mMediaStoreCompat != null) {
+                mMediaStoreCompat.dispatchCaptureIntent(this, REQUEST_CODE_CAPTURE);
+            }
         }
+    }
+
+    private boolean assertAddSelection(Context context) {
+        if (mSelectedCollection.maxSelectableReached()) {
+            String cause;
+            int maxSelectable = SelectionSpec.getInstance().maxSelectable;
+            try {
+                cause = context.getResources().getQuantityString(
+                        R.plurals.error_over_count,
+                        maxSelectable,
+                        maxSelectable
+                );
+            } catch (Resources.NotFoundException e) {
+                cause = context.getString(
+                        R.string.error_over_count,
+                        maxSelectable
+                );
+            }
+            IncapableCause.handleCause(context, new IncapableCause(cause));
+            return false;
+        } return true;
     }
 
     @Override
