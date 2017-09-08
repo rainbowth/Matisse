@@ -25,6 +25,7 @@ import com.zhihu.matisse.engine.ImageEngine;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.filter.Filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ public final class SelectionSpec {
     public int gridExpectedSize;
     public float thumbnailScale;
     public ImageEngine imageEngine;
+    public ArrayList<Item> selected;
 
     private SelectionSpec() {
     }

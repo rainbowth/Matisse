@@ -118,6 +118,7 @@ public class MatisseActivity extends AppCompatActivity implements
         mEmptyView = findViewById(R.id.empty_view);
 
         mSelectedCollection.onCreate(savedInstanceState);
+        addIntentSelected();
         updateSelectedCount();
 
         mAlbumsAdapter = new AlbumsAdapter(this, null, false);
@@ -129,6 +130,18 @@ public class MatisseActivity extends AppCompatActivity implements
         mAlbumCollection.onCreate(this, this);
         mAlbumCollection.onRestoreInstanceState(savedInstanceState);
         mAlbumCollection.loadAlbums();
+    }
+
+    private void addIntentSelected() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(SelectedItemCollection.STATE_SELECTION)) {
+            ArrayList<Item> selected = intent.getParcelableArrayListExtra(SelectedItemCollection.STATE_SELECTION);
+            if (selected != null && !selected.isEmpty()) {
+                for (Item item : selected) {
+                    mSelectedCollection.add(item);
+                }
+            }
+        }
     }
 
     @Override
@@ -262,6 +275,8 @@ public class MatisseActivity extends AppCompatActivity implements
             result.putParcelableArrayListExtra(EXTRA_RESULT_SELECTION, selectedUris);
             ArrayList<String> selectedPaths = (ArrayList<String>) mSelectedCollection.asListOfString();
             result.putStringArrayListExtra(EXTRA_RESULT_SELECTION_PATH, selectedPaths);
+            ArrayList<Item> selected = mSelectedCollection.getDataWithBundle().getParcelableArrayList(SelectedItemCollection.STATE_SELECTION);
+            result.putParcelableArrayListExtra(SelectedItemCollection.STATE_SELECTION, selected);
             setResult(RESULT_OK, result);
             finish();
         }
@@ -281,6 +296,10 @@ public class MatisseActivity extends AppCompatActivity implements
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void cancel(View view){
+        finish();
     }
 
     @Override

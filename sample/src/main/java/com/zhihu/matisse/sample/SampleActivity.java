@@ -36,7 +36,9 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
 import com.zhihu.matisse.filter.Filter;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
+import com.zhihu.matisse.internal.entity.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -47,6 +49,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
     private static final int REQUEST_CODE_CHOOSE = 23;
 
     private UriAdapter mAdapter;
+    private ArrayList<Item> mSelect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,37 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(final View v) {
-        RxPermissions rxPermissions = new RxPermissions(this);
+        switch (v.getId()) {
+            case R.id.zhihu:
+                Matisse.from(SampleActivity.this)
+                        .choose(MimeType.ofAll(), false)
+                        .countable(true)
+                        .capture(true)
+                        .captureStrategy(
+                                new CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider"))
+                        .maxSelectable(6)
+                        .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                        .gridExpectedSize(
+                                getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(new FrescoEngine())
+                        .forResult(REQUEST_CODE_CHOOSE);
+                break;
+            case R.id.dracula:
+                Matisse.from(SampleActivity.this)
+                        .choose(MimeType.ofImage())
+                        .theme(R.style.Matisse_Dracula)
+                        .selected(mSelect)
+                        .countable(false)
+                        .maxSelectable(9)
+                        .imageEngine(new PicassoEngine())
+                        .forResult(REQUEST_CODE_CHOOSE);
+                break;
+        }
+        mAdapter.setData(null, null);
+        return;
+        /*RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
                     @Override
@@ -73,34 +106,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                            switch (v.getId()) {
-                                case R.id.zhihu:
-                                    Matisse.from(SampleActivity.this)
-                                            .choose(MimeType.ofAll(), false)
-                                            .countable(true)
-                                            .capture(true)
-                                            .captureStrategy(
-                                                    new CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider"))
-                                            .maxSelectable(6)
-                                            .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-                                            .gridExpectedSize(
-                                                    getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-                                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                                            .thumbnailScale(0.85f)
-                                            .imageEngine(new FrescoEngine())
-                                            .forResult(REQUEST_CODE_CHOOSE);
-                                    break;
-                                case R.id.dracula:
-                                    Matisse.from(SampleActivity.this)
-                                            .choose(MimeType.ofImage())
-                                            .theme(R.style.Matisse_Dracula)
-                                            .countable(false)
-                                            .maxSelectable(9)
-                                            .imageEngine(new PicassoEngine())
-                                            .forResult(REQUEST_CODE_CHOOSE);
-                                    break;
-                            }
-                            mAdapter.setData(null, null);
+
                         } else {
                             Toast.makeText(SampleActivity.this, R.string.permission_request_denied, Toast.LENGTH_LONG)
                                     .show();
@@ -116,7 +122,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
                     public void onComplete() {
 
                     }
-                });
+                });*/
     }
 
     @Override
@@ -124,6 +130,7 @@ public class SampleActivity extends AppCompatActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             mAdapter.setData(Matisse.obtainResult(data), Matisse.obtainPathResult(data));
+            mSelect = Matisse.obtainSelectResult(data);
         }
     }
 

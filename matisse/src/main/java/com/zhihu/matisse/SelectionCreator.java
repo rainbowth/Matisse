@@ -28,7 +28,9 @@ import android.support.v4.app.Fragment;
 import com.zhihu.matisse.engine.ImageEngine;
 import com.zhihu.matisse.filter.Filter;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
+import com.zhihu.matisse.internal.entity.Item;
 import com.zhihu.matisse.internal.entity.SelectionSpec;
+import com.zhihu.matisse.internal.model.SelectedItemCollection;
 import com.zhihu.matisse.ui.MatisseActivity;
 
 import java.lang.annotation.Retention;
@@ -262,6 +264,11 @@ public final class SelectionCreator {
         return this;
     }
 
+    public SelectionCreator selected(ArrayList<Item> selected){
+        mSelectionSpec.selected = selected;
+        return this;
+    }
+
     /**
      * Start to select media and wait for result.
      *
@@ -274,7 +281,9 @@ public final class SelectionCreator {
         }
 
         Intent intent = new Intent(activity, MatisseActivity.class);
-
+        if (mSelectionSpec != null && mSelectionSpec.selected != null) {
+            intent.putExtra(SelectedItemCollection.STATE_SELECTION, mSelectionSpec.selected);
+        }
         Fragment fragment = mMatisse.getFragment();
         if (fragment != null) {
             fragment.startActivityForResult(intent, requestCode);

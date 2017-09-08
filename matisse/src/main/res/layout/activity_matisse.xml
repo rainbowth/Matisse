@@ -28,6 +28,8 @@
         android:background="@android:color/white">
 
         <TextView
+            android:clickable="true"
+            android:onClick="cancel"
             android:text="取消"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
