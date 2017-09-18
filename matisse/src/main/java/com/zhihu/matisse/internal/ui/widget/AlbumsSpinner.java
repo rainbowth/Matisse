@@ -25,6 +25,8 @@ import android.support.v7.widget.ListPopupWindow;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckedTextView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.zhihu.matisse.R;
@@ -32,7 +34,7 @@ import com.zhihu.matisse.internal.entity.Album;
 import com.zhihu.matisse.internal.ui.adapter.AlbumsAdapter;
 import com.zhihu.matisse.internal.utils.Platform;
 
-public class AlbumsSpinner {
+public class AlbumsSpinner implements PopupWindow.OnDismissListener {
 
     private static final int MAX_SHOWN_COUNT = 5;
     private AlbumsAdapter mAdapter;
@@ -54,6 +56,7 @@ public class AlbumsSpinner {
                 AlbumsSpinner.this.onItemClick(parent, view, position, id);
             }
         });
+        mListPopupWindow.setOnDismissListener(this);
     }
 
     private void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -113,19 +116,22 @@ public class AlbumsSpinner {
     public void setSelectedTextView(TextView textView) {
         mSelected = textView;
         // tint dropdown arrow icon
-        Drawable[] drawables = mSelected.getCompoundDrawables();
+        /*Drawable[] drawables = mSelected.getCompoundDrawables();
         Drawable right = drawables[2];
         TypedArray ta = mSelected.getContext().getTheme().obtainStyledAttributes(
                 new int[]{R.attr.album_element_color});
         int color = ta.getColor(0, 0);
         ta.recycle();
-        right.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        right.setColorFilter(color, PorterDuff.Mode.SRC_IN);*/
 
         mSelected.setVisibility(View.GONE);
         mSelected.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                if (v instanceof CheckedTextView){
+                    ((CheckedTextView) v).setChecked(true);
+                }
                 int itemHeight = v.getResources().getDimensionPixelSize(R.dimen.album_item_height);
                 int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, v.getResources().getDisplayMetrics());
                 mListPopupWindow.setHeight(
@@ -144,4 +150,10 @@ public class AlbumsSpinner {
         mListPopupWindow.setAnchorView(view);
     }
 
+    @Override
+    public void onDismiss() {
+        if (mSelected instanceof CheckedTextView) {
+            ((CheckedTextView) mSelected).setChecked(false);
+        }
+    }
 }
